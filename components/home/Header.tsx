@@ -1,11 +1,9 @@
 "use client";
-
 import { HOME_LINKS } from "@/utils/data";
 import LogoComponent from "../LogoComponent";
 import Link from "next/link";
 import useGetUser from "@/hooks/useGetUser";
 import ToggleTheme from "../ToggleTheme";
-import LogoutBtn from "../LogoutBtn";
 import AvatarComponent from "../AvatarComponent";
 import SheetComponent from "../SheetComponent";
 import { MenuIcon } from "lucide-react";

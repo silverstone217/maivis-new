@@ -20,7 +20,7 @@ export default function AuthForm() {
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
 
-  const { data: session, update } = useSession();
+  const { update } = useSession();
 
   //   const [error, setError] = useState("");
 
