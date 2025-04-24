@@ -14,7 +14,7 @@ import HomeProfileMenu from "./HomeProfileMenu";
 const Header = () => {
   const { user } = useGetUser();
   return (
-    <header>
+    <header className="fixed z-50 left-0 right-0 top-0 bg-background">
       {/* Container */}
       <div className="flex items-center justify-between p-4">
         {/* Logo link */}
@@ -34,7 +34,7 @@ const Header = () => {
                 className={`${
                   link.isProtected ? "hidden" : ""
                 } p-2 border rounded-2xl border-transparent
-                hover:opacity-70 hover:underline underline-offset-2
+                hover:opacity-80 hover:underline underline-offset-2
                 transition-all duration-500 ease-in-out font-medium
                 `}
               >
