@@ -26,4 +26,37 @@ const AUTH_CONTENT = [
   },
 ];
 
-export { AUTH_CONTENT };
+const HOME_LINKS = [
+  {
+    id: 1,
+    title: "Accueil",
+    href: "/",
+    isProtected: false,
+  },
+  {
+    id: 2,
+    title: "Services",
+    href: "/services",
+    isProtected: false,
+  },
+  {
+    id: 3,
+    title: "Contact",
+    href: "/contact",
+    isProtected: false,
+  },
+  {
+    id: 4,
+    title: "A propos",
+    href: "/a-propos",
+    isProtected: false,
+  },
+  {
+    id: 5,
+    title: "Dashboard",
+    href: "/overview",
+    isProtected: true,
+  },
+];
+
+export { HOME_LINKS, AUTH_CONTENT };

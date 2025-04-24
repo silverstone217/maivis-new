@@ -8,6 +8,7 @@ import { isEmptyString } from "@/utils/functions";
 import { toast } from "sonner";
 import { registerAction, RegisterAuthType } from "@/actions/auth-actions";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,6 +19,8 @@ export default function AuthForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+
+  const { data: session, update } = useSession();
 
   //   const [error, setError] = useState("");
 
@@ -51,7 +54,7 @@ export default function AuthForm() {
 
       if (res?.error) {
         toast.error(res.message, {
-          description: "Veuillez réessayer plus tard",
+          description: "Veuillez réessayer!",
           duration: 2500,
         });
         return;
@@ -61,7 +64,10 @@ export default function AuthForm() {
         description: "Vous êtes connecté",
       });
 
-      setTimeout(() => router.refresh(), 2000);
+      setTimeout(async () => {
+        router.refresh();
+        await update();
+      }, 2000);
     } catch (error) {
       console.log(error);
       toast.error("Une erreur est survenue lors de la connexion", {
@@ -161,7 +167,7 @@ export default function AuthForm() {
               variant="ghost"
               size="icon"
               className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-transparent hover:text-primary
-              transition-all duration-300 ease-in-out cursor-pointer
+              transition-all duration-300 ease-in-out cursor-pointer hover:dark:bg-transparent
               "
               onClick={() => setIsVisible(!isVisible)}
               disabled={isLoading}
@@ -197,7 +203,8 @@ export default function AuthForm() {
           {/* Link switch  auth*/}
           <Button
             variant={"ghost"}
-            className="w-fit self-end hover:bg-transparent cursor-pointer"
+            className="w-fit self-end hover:bg-transparent cursor-pointer
+             hover:dark:bg-transparent"
             type="button"
             onClick={() => setIsLogin(!isLogin)}
             disabled={isLoading}

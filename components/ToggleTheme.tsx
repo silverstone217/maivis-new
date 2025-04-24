@@ -20,6 +20,8 @@ const ToggleTheme = () => {
       variant="outline"
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="hover:dark:bg-transparent hover:dark:text-foreground hover:text-foreground
+      transition-all duration-300 ease-in-out hover:bg-transparent"
     >
       {theme === "light" ? (
         <Sun className="size-6" />

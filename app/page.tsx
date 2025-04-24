@@ -1,4 +1,5 @@
 import { getUser } from "@/actions/auth-actions";
+import Header from "@/components/home/Header";
 import LogoutBtn from "@/components/LogoutBtn";
 import ToggleTheme from "@/components/ToggleTheme";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,8 @@ export default async function Home() {
   const user = await getUser();
   return (
     <main>
-      <div className="flex flex-col items-center justify-center h-screen gap-4">
+      <Header />
+      <div className="flex  p-4 flex-col items-center justify-center h-[60vh] gap-4">
         <h1 className="text-4xl font-bold">Maivis</h1>
         <p className="text-2xl">
           Meilleure application pour reserver un service de maison fait par des
