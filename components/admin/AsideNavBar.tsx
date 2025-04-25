@@ -13,7 +13,7 @@ import { signOut } from "next-auth/react";
 import ToggleTheme from "../ToggleTheme";
 function AsideNavBar() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) => pathname.includes(path);
 
   const { user } = useGetUser();
   const roleDescription = getRoleDescription(user?.role);
@@ -67,12 +67,6 @@ function AsideNavBar() {
           Bienvenue {roleDescription}
         </span>
 
-        {/* toggle theme */}
-        <div className="flex items-center gap-2 w-full justify-start">
-          <ToggleTheme />
-          <span className="text-sm font-medium">Thème</span>
-        </div>
-
         {/* Profile avatar */}
         <Link
           href={"/profil"}
@@ -84,6 +78,12 @@ function AsideNavBar() {
             <span className="text-xs text-gray-500">{user?.email}</span>
           </div>
         </Link>
+
+        {/* toggle theme */}
+        <div className="flex items-center gap-2 w-full justify-start">
+          <ToggleTheme />
+          <span className="text-sm font-medium">Thème</span>
+        </div>
 
         {/* Logout button */}
         <Button

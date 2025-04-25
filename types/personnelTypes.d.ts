@@ -1,0 +1,19 @@
+export type PersonnelsTypes = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  job: string | undefined;
+  avenue: string | undefined;
+  commune: string | undefined;
+  ville: string | undefined;
+  province: string | undefined;
+  codePostal: string | undefined;
+  pays: string | undefined;
+  telephone: string | undefined;
+  gender: string | undefined;
+  birthday: Date | undefined;
+  image: string | undefined;
+  createdAt: Date;
+  updatedAt: Date;
+  role: string;
+};

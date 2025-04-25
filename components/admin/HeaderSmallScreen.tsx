@@ -30,7 +30,7 @@ export default function HeaderSmallScreen() {
 
 const MenuButton = () => {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) => pathname.includes(path);
 
   const { user } = useGetUser();
   const roleDescription = getRoleDescription(user?.role);

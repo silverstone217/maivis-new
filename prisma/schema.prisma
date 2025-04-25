@@ -72,8 +72,30 @@ model User {
   telephone     String?
   role          String    @default("USER")
   isBanned      Boolean   @default(false)
+  gender        String?
+  birthday      DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  personnelInfo PersonnelInfo?
 }
+
+model PersonnelInfo {
+  id String @id @default(cuid())
+  personnelId String @unique
+  job String
+  avenue String
+  commune String
+  ville String
+  province String @default("kinshasa")
+  codePostal String?
+  pays String @default("congo-kinshasa")
+  personnel User @relation(fields: [personnelId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+

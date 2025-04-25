@@ -18,3 +18,10 @@ export const getRoleDescription = (role?: string) => {
   if (!role) return "";
   return ROLES.find((r) => r.title === role)?.description;
 };
+
+type DataArray = { label: string; value: string };
+export const returnDataValue = (value: string, data: DataArray[]) => {
+  const values = data;
+  const found = values.find((elem) => elem.value === value);
+  return found?.label.toLocaleLowerCase() ?? "";
+};
