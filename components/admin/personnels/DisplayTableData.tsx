@@ -244,7 +244,7 @@ export function PersonnelsDataTable<TData, TValue>({
           className="w-full sm:max-w-sm"
         />
 
-        <div className="flex items-center gap-4 md:flex-1">
+        <div className="md:flex items-center gap-4 md:flex-1 grid grid-cols-2">
           {/* select job */}
           <Select
             onValueChange={(value) => {
@@ -256,7 +256,7 @@ export function PersonnelsDataTable<TData, TValue>({
               }
             }}
           >
-            <SelectTrigger className="w-[180px] sm:w-[200px]">
+            <SelectTrigger className="w-full md:w-[200px]">
               <SelectValue placeholder="Filtrer par fonction..." />
             </SelectTrigger>
             <SelectContent>
@@ -272,7 +272,7 @@ export function PersonnelsDataTable<TData, TValue>({
           {/* colonnes */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+              <Button variant="outline" className="md:ml-auto">
                 Colonnes <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
