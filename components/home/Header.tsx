@@ -6,10 +6,14 @@ import useGetUser from "@/hooks/useGetUser";
 import ToggleTheme from "../ToggleTheme";
 import AvatarComponent from "../AvatarComponent";
 import SheetComponent from "../SheetComponent";
-import { MenuIcon } from "lucide-react";
+import { LogOut, MenuIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import HomeProfileMenu from "./HomeProfileMenu";
+import {
+  HomeProfileAccordionSmallScreen,
+  HomeProfileMenu,
+} from "./HomeProfileMenu";
+import { signOut } from "next-auth/react";
 
 const Header = () => {
   const { user } = useGetUser();
@@ -27,7 +31,7 @@ const Header = () => {
         <div className="hidden lg:flex items-center gap-6">
           {/* Links */}
           <nav className="flex items-center gap-2">
-            {HOME_LINKS.map((link) => (
+            {HOME_LINKS.filter((link) => !link.isProtected).map((link) => (
               <Link
                 key={link.id}
                 href={link.href}
@@ -69,15 +73,19 @@ const SmallScreenHeader = () => {
   const { user } = useGetUser();
   return (
     <SheetComponent
-      trigger={<MenuIcon className="size-6" />}
+      trigger={
+        <Button variant={"outline"} size={"icon"}>
+          <MenuIcon className="size-6" />
+        </Button>
+      }
       title="Maivis"
       description="Meilleure application de reservaion de service de maison en ligne!"
       side="right"
       content={
         <div className="flex flex-col p-4 flex-1 border-t gap-4">
           {/* Links */}
-          <nav className="flex flex-col gap-2 flex-1 pb-4 border-b">
-            {HOME_LINKS.map((link) => (
+          <nav className="flex flex-col gap-1 flex-1 pb-4 border-b">
+            {HOME_LINKS.filter((link) => !link.isProtected).map((link) => (
               <Link
                 key={link.id}
                 href={link.href}
@@ -91,22 +99,22 @@ const SmallScreenHeader = () => {
                 {link.title}
               </Link>
             ))}
-
-            {/* Admin link dashboard */}
-            {user && user.role.includes("ADMIN") && (
-              <Link
-                href="/dashboard"
-                className="text-blue-500 p-2 font-medium text-xl
-                transition-all duration-500 ease-in-out
-                "
-              >
-                Dashboard **
-              </Link>
-            )}
+            {/* my space */}
+            <HomeProfileAccordionSmallScreen />
           </nav>
           {/* Btn for login or register  and Toggle theme */}
           <div className="flex gap-4 items-center flex-wrap">
+            {/* toggle theme */}
             <ToggleTheme />
+
+            {/* logout btn */}
+            {user && (
+              <Button variant={"outline"} onClick={() => signOut()}>
+                <LogOut className="size-6 text-destructive" />
+              </Button>
+            )}
+
+            {/* user avatar */}
             {user ? <AvatarComponent /> : <LoginLink />}
           </div>
         </div>

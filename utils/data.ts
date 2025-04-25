@@ -1,6 +1,13 @@
 import img1 from "@/public/images/cleaning1.jpg";
 import img2 from "@/public/images/cleaning2.jpg";
 import img3 from "@/public/images/driver1.jpg";
+import {
+  CalendarCheck,
+  ChartNoAxesGantt,
+  HandPlatter,
+  Users,
+  UsersRound,
+} from "lucide-react";
 
 const AUTH_CONTENT = [
   {
@@ -56,7 +63,94 @@ const HOME_LINKS = [
     title: "Dashboard",
     href: "/overview",
     isProtected: true,
+    role: ["ADMIN", "SUPER_ADMIN"],
+  },
+  {
+    id: 6,
+    title: "Mes reservations",
+    href: "/mes-reservations",
+    isProtected: true,
+    role: ["USER"],
+  },
+  {
+    id: 7,
+    title: "Personnels",
+    href: "/personnels",
+    isProtected: true,
+    role: ["PERSONNEL"],
+  },
+  {
+    id: 8,
+    title: "Profil",
+    href: "/profil",
+    isProtected: true,
   },
 ];
 
-export { HOME_LINKS, AUTH_CONTENT };
+const ADMIN_LINKS = [
+  {
+    id: 1,
+    title: "Dashboard",
+    href: "/overview",
+    icon: ChartNoAxesGantt,
+  },
+  {
+    id: 2,
+    title: "Personnels",
+    href: "/personnels",
+    icon: UsersRound,
+  },
+  {
+    id: 3,
+    title: "Reservations",
+    href: "/reservations",
+    icon: CalendarCheck,
+  },
+  {
+    id: 4,
+    title: "Services",
+    href: "/gestion-services",
+    icon: HandPlatter,
+  },
+  {
+    id: 5,
+    title: "Clients",
+    href: "/clients",
+    icon: Users,
+  },
+];
+
+const ROLES = [
+  {
+    id: 1,
+    title: "ADMIN",
+    description: "Administrateur",
+  },
+  {
+    id: 2,
+    title: "SUPER_ADMIN",
+    description: "Super Administrateur",
+  },
+  {
+    id: 3,
+    title: "PERSONNEL",
+    description: "Personnel",
+  },
+  {
+    id: 4,
+    title: "CLIENT",
+    description: "Client",
+  },
+  {
+    id: 5,
+    title: "MODERATOR",
+    description: "Modérateur",
+  },
+  {
+    id: 6,
+    title: "USER",
+    description: "Utilisateur",
+  },
+];
+
+export { HOME_LINKS, AUTH_CONTENT, ADMIN_LINKS, ROLES };

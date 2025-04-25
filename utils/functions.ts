@@ -1,3 +1,5 @@
+import { ROLES } from "./data";
+
 export const isEmptyString = (value: string) => {
   return value.replace(/ /g, "") === "";
 };
@@ -10,4 +12,9 @@ export const isEmail = (value: string) => {
 export const capitalizeFirstLetter = (text: string): string => {
   if (!text) return ""; // Vérifie si le texte est vide ou null
   return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+export const getRoleDescription = (role?: string) => {
+  if (!role) return "";
+  return ROLES.find((r) => r.title === role)?.description;
 };

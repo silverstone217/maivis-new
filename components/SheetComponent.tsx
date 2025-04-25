@@ -26,7 +26,7 @@ const SheetComponent = ({
 }: SheetComponentProps) => {
   return (
     <Sheet>
-      <SheetTrigger>{trigger}</SheetTrigger>
+      <SheetTrigger asChild>{trigger}</SheetTrigger>
       <SheetContent
         side={side}
         className="flex flex-col gap-2.5 w-full overflow-x-hidden overflow-y-auto py-2"
