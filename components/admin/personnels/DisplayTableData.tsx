@@ -232,69 +232,71 @@ export function PersonnelsDataTable<TData, TValue>({
   const uniqueJob = Array.from(new Set(personnels.map((dt) => dt.job)));
 
   return (
-    <div className="rounded-md border p-2">
+    <div className="rounded-md border p-2 w-full">
       {/* filter top */}
-      <div className="flex items-center py-4">
+      <div className="flex flex-col md:flex-row gap-4 py-4 w-full">
         <Input
           placeholder="Filtrer par nom..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full sm:max-w-sm"
         />
 
-        {/* select role */}
-        <Select
-          onValueChange={(value) => {
-            // if value is "all", then clear the filter
-            if (value === "all") {
-              table.getColumn("job")?.setFilterValue(undefined);
-            } else {
-              table.getColumn("job")?.setFilterValue(value);
-            }
-          }}
-        >
-          <SelectTrigger className="max-w-xs mx-4">
-            <SelectValue placeholder="Filtrer par fonction..." />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Toutes les fonctions</SelectItem>
-            {uniqueJob.map((job) => (
-              <SelectItem key={job} value={job!}>
-                {returnDataValue(job!, JOBS_LIST)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-4 md:flex-1">
+          {/* select job */}
+          <Select
+            onValueChange={(value) => {
+              // if value is "all", then clear the filter
+              if (value === "all") {
+                table.getColumn("job")?.setFilterValue(undefined);
+              } else {
+                table.getColumn("job")?.setFilterValue(value);
+              }
+            }}
+          >
+            <SelectTrigger className="w-[180px] sm:w-[200px]">
+              <SelectValue placeholder="Filtrer par fonction..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toutes les fonctions</SelectItem>
+              {uniqueJob.map((job) => (
+                <SelectItem key={job} value={job!}>
+                  {returnDataValue(job!, JOBS_LIST)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        {/* colonnes */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Colonnes <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          {/* colonnes */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Colonnes <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* table colonne */}
