@@ -1,4 +1,5 @@
 "use client";
+"use client";
 import React, { useState } from "react";
 import {
   ColumnDef,
@@ -44,12 +45,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { PersonnelsTypes } from "@/types/personnelTypes";
 import Link from "next/link";
-import { getRoleDescription, returnDataValue } from "@/utils/functions";
-import { JOBS_LIST } from "@/utils/otherData";
+import { returnDataValue } from "@/utils/functions";
+import { ROLES_LIST } from "@/utils/otherData";
 import noImage from "@/public/images/no-user.png";
+import { User } from "@prisma/client";
 
 type DisplayTableDataProps = {
-  data: PersonnelsTypes[];
+  data: User[];
 };
 
 interface DataTableProps<TData, TValue> {
@@ -58,7 +60,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 // delete component
-const ActionsCell = ({ personnel }: { personnel: PersonnelsTypes }) => {
+const ActionsCell = ({ client }: { client: User }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -73,13 +75,16 @@ const ActionsCell = ({ personnel }: { personnel: PersonnelsTypes }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(personnel.id)}
+          onClick={() => navigator.clipboard.writeText(client.id)}
         >
           Copier l&apos;ID personnel
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href={`/personnels/${personnel.id}`}>
+        <DropdownMenuItem
+          asChild
+          disabled={client.role === "USER" || client.role === "CLIENT"}
+        >
+          <Link href={`/clients/${client.id}`}>
             <span className="text-sm">Consulter</span>
           </Link>
           {/* <ModifyRoleUser admin={admins} /> */}
@@ -95,7 +100,7 @@ const ActionsCell = ({ personnel }: { personnel: PersonnelsTypes }) => {
   );
 };
 
-export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
+export const ClientsColumns: ColumnDef<User>[] = [
   {
     accessorKey: "image",
     header: "Image",
@@ -137,14 +142,14 @@ export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
     ),
   },
   {
-    accessorKey: "job",
+    accessorKey: "role",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Fonction
+          Rôle
           <ArrowUpDown className="ml-2 h-4 w-4 " />
         </Button>
       );
@@ -157,7 +162,7 @@ export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
           line-clamp-1 text-left
           `}
         >
-          {returnDataValue(row.getValue("job")!, JOBS_LIST)}
+          {returnDataValue(row.getValue("role")!, ROLES_LIST)}
         </span>
       </div>
     ),
@@ -183,13 +188,13 @@ export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const personnel = row.original;
-      return <ActionsCell personnel={personnel} />;
+      const client = row.original;
+      return <ActionsCell client={client} />;
     },
   },
 ];
 
-export function PersonnelsDataTable<TData, TValue>({
+export function ClientsDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -228,7 +233,7 @@ export function PersonnelsDataTable<TData, TValue>({
 
   const personnels = data as PersonnelsTypes[];
 
-  const uniqueJob = Array.from(new Set(personnels.map((dt) => dt.job)));
+  const uniqueRole = Array.from(new Set(personnels.map((dt) => dt.role)));
 
   return (
     <div className="rounded-md border p-2 w-full">
@@ -249,20 +254,20 @@ export function PersonnelsDataTable<TData, TValue>({
             onValueChange={(value) => {
               // if value is "all", then clear the filter
               if (value === "all") {
-                table.getColumn("job")?.setFilterValue(undefined);
+                table.getColumn("role")?.setFilterValue(undefined);
               } else {
-                table.getColumn("job")?.setFilterValue(value);
+                table.getColumn("role")?.setFilterValue(value);
               }
             }}
           >
             <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder="Filtrer par fonction..." />
+              <SelectValue placeholder="Filtrer par rôle..." />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toutes les fonctions</SelectItem>
-              {uniqueJob.map((job) => (
-                <SelectItem key={job} value={job!}>
-                  {returnDataValue(job!, JOBS_LIST)}
+              <SelectItem value="all">Tous les rôles</SelectItem>
+              {uniqueRole.map((role) => (
+                <SelectItem key={role} value={role!}>
+                  {returnDataValue(role!, ROLES_LIST)}
                 </SelectItem>
               ))}
             </SelectContent>

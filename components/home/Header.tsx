@@ -20,7 +20,7 @@ const Header = () => {
   return (
     <header className="fixed z-50 left-0 right-0 top-0 bg-background">
       {/* Container */}
-      <div className="flex items-center justify-between p-4">
+      <div className="flex items-center justify-between p-4 container mx-auto">
         {/* Logo link */}
         <Link href="/" className="flex items-center gap-0.5">
           <LogoComponent />

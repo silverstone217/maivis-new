@@ -25,3 +25,10 @@ export const returnDataValue = (value: string, data: DataArray[]) => {
   const found = values.find((elem) => elem.value === value);
   return found?.label.toLocaleLowerCase() ?? "";
 };
+
+export const formatPrice = (price: number) => {
+  return price.toLocaleString("fr-FR", {
+    style: "currency",
+    currency: "USD",
+  });
+};

@@ -97,5 +97,13 @@ model PersonnelInfo {
 }
 
 
-
+model Service {
+  id String @id @default(cuid())
+  service String @unique
+  description String
+  price Int
+  image String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
