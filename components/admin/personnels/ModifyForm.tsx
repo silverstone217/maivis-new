@@ -242,7 +242,10 @@ const ModifyForm = ({ personnel }: ModifyFormProps) => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setImagePreview(personnel.image ?? "")}
+                  onClick={() => {
+                    setImagePreview(personnel.image ?? "");
+                    setImage(null);
+                  }}
                   disabled={isLoading}
                 >
                   Annuler l&apos;ajout
