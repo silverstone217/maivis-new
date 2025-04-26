@@ -167,4 +167,29 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(80, 80, 120, 0.18); /* Couleur pâle, semi-transparente */
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(80, 80, 120, 0.32); /* Plus visible au hover */
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Pour Firefox */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(80, 80, 120, 0.18) transparent;
+  }
+  html.dark {
+    scrollbar-color: rgba(180, 180, 220, 0.18) transparent;
+  }
 }
