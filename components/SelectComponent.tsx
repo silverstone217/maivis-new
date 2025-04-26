@@ -11,7 +11,7 @@ import {
 interface SelectComponentProps {
   options: { label: string; value: string }[];
   placeholder: string;
-  value: string;
+  defaultValue: string;
   onChange: (value: string) => void;
   isDisabled?: boolean;
   isRequired?: boolean;
@@ -20,14 +20,14 @@ interface SelectComponentProps {
 const SelectComponent = ({
   options,
   placeholder,
-  value,
+  defaultValue,
   onChange,
   isDisabled,
   isRequired,
 }: SelectComponentProps) => {
   return (
     <Select
-      value={value}
+      defaultValue={defaultValue}
       onValueChange={onChange}
       disabled={isDisabled}
       required={isRequired}

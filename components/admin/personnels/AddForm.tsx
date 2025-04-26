@@ -146,7 +146,7 @@ function AddForm() {
               { label: "Féminin", value: "female" },
             ]}
             placeholder="Choisir un genre"
-            value={gender}
+            defaultValue={gender}
             onChange={setGender}
             isRequired
             isDisabled={isLoading}
@@ -175,7 +175,7 @@ function AddForm() {
           <SelectComponent
             options={JOBS_LIST}
             placeholder="Choisir un poste"
-            value={job}
+            defaultValue={job}
             onChange={setJob}
             isRequired
             isDisabled={isLoading}
@@ -285,7 +285,11 @@ function AddForm() {
           </div>
         </div>
         {/* Submit */}
-        <Button type="submit" disabled={isDisabledBtn}>
+        <Button
+          type="submit"
+          disabled={isDisabledBtn}
+          className="cursor-pointer"
+        >
           {isLoading ? "Enregistrement..." : "Enregistrer"}
         </Button>
       </form>

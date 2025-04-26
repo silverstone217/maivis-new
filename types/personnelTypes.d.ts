@@ -16,4 +16,5 @@ export type PersonnelsTypes = {
   createdAt: Date;
   updatedAt: Date;
   role: string;
+  isBanned: boolean;
 };

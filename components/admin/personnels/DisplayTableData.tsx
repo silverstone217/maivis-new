@@ -108,7 +108,7 @@ export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
           width={800}
           height={800}
           priority
-          className="object-cover brightness-90 w-12 h-12"
+          className="object-cover brightness-90 w-12 h-12 rounded-full"
         />
       </div>
     ),

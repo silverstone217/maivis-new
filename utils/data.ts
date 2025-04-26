@@ -5,6 +5,7 @@ import {
   CalendarCheck,
   ChartNoAxesGantt,
   HandPlatter,
+  Shield,
   Users,
   UsersRound,
 } from "lucide-react";
@@ -46,16 +47,17 @@ const HOME_LINKS = [
     href: "/services",
     isProtected: false,
   },
+
   {
     id: 3,
-    title: "Contact",
-    href: "/contact",
+    title: "A propos",
+    href: "/a-propos",
     isProtected: false,
   },
   {
     id: 4,
-    title: "A propos",
-    href: "/a-propos",
+    title: "Contact",
+    href: "/contact",
     isProtected: false,
   },
   {
@@ -117,6 +119,12 @@ const ADMIN_LINKS = [
     title: "Clients",
     href: "/clients",
     icon: Users,
+  },
+  {
+    id: 6,
+    title: "Administrateurs",
+    href: "/admins",
+    icon: Shield,
   },
 ];
 
