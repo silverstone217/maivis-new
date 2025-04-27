@@ -79,7 +79,13 @@ model User {
   accounts      Account[]
   sessions      Session[]
   personnelInfo PersonnelInfo?
+
+  Subscription Subscription[] @relation("ClientSubscriptions")
+  bookings Subscription[] @relation("PersonnelSubscriptions")
+
 }
+
+
 
 model PersonnelInfo {
   id String @id @default(cuid())
@@ -96,7 +102,6 @@ model PersonnelInfo {
   updatedAt DateTime @updatedAt
 }
 
-
 model Service {
   id String @id @default(cuid())
   service String @unique
@@ -107,3 +112,67 @@ model Service {
   updatedAt DateTime @updatedAt
 }
 
+model Subscription {
+  id String @id @default(cuid())
+  service String
+  clientId String
+  personnelId String?
+
+  debutDate DateTime
+  // debutTime DateTime
+  offDay String[]
+  isStayingAtHome Boolean
+  isDayOff Boolean
+
+  status String @default("pending")
+  isPaid Boolean @default(false)
+  price Int
+  duration String
+ 
+  bookingUserInfo BookingUserInfo?
+  
+  Payment Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  client User @relation("ClientSubscriptions", fields: [clientId], references: [id])
+  personnel User? @relation("PersonnelSubscriptions", fields: [personnelId], references: [id])
+
+}
+
+model BookingUserInfo {
+  id String @id @default(cuid())
+  telephone String
+  name String
+  avenue String
+  commune String
+  ville String
+
+  province String @default("kinshasa")
+  codePostal String?
+  pays String @default("congo-kinshasa")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  subscriptionId String @unique
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+}
+
+model Payment {
+  id String @id @default(cuid())
+  paymentType String @default("mpesa")
+  paymentId String
+  paymentDate DateTime?
+  paymentAmount Int
+  paymentStatus String?
+  paymentMethod String?
+  paymentRef String?
+  paymentDescription String?
+  paymentCurrency String? @default("USD")
+
+  subscriptionId String
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

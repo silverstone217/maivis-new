@@ -35,7 +35,7 @@ const SERVICES_LIST = [
     description:
       "Service de nettoyage complet de votre maison incluant dépoussiérage, lavage des sols et sanitaires",
     price: 50,
-    duration: "weekly",
+    duration: "monthly",
     image: maid,
   },
   {
@@ -44,7 +44,7 @@ const SERVICES_LIST = [
     description:
       "Préparation de repas équilibrés et personnalisés selon vos préférences",
     price: 30,
-    duration: "daily",
+    duration: "monthly",
     image: cooker,
   },
   {
@@ -53,7 +53,7 @@ const SERVICES_LIST = [
     description:
       "Service de chauffeur privé pour vos déplacements personnels ou professionnels",
     price: 40,
-    duration: "once",
+    duration: "monthly",
     image: driver,
   },
   {
@@ -122,4 +122,14 @@ const DURATION_LIST = [
   { label: "Autre", value: "other" },
 ];
 
-export { JOBS_LIST, SERVICES_LIST, DURATION_LIST, ROLES_LIST };
+const DAY_LIST = [
+  { label: "Lundi", value: "monday" },
+  { label: "Mardi", value: "tuesday" },
+  { label: "Mercredi", value: "wednesday" },
+  { label: "Jeudi", value: "thursday" },
+  { label: "Vendredi", value: "friday" },
+  { label: "Samedi", value: "saturday" },
+  { label: "Dimanche", value: "sunday" },
+];
+
+export { JOBS_LIST, SERVICES_LIST, DURATION_LIST, ROLES_LIST, DAY_LIST };

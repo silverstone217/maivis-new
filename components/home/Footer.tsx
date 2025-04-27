@@ -9,7 +9,7 @@ export const Footer = () => {
       <div className="container mx-auto p-4 minh-[20dvh] flex flex-col gap-8 justify-between">
         {/* Logo and links */}
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1">
             <LogoComponent />
             <span className="text-xl font-bold">Maivis</span>
           </div>

@@ -1,4 +1,5 @@
 import { ROLES } from "./data";
+import { SERVICES_LIST } from "./otherData";
 
 export const isEmptyString = (value: string) => {
   return value.replace(/ /g, "") === "";
@@ -31,4 +32,10 @@ export const formatPrice = (price: number) => {
     style: "currency",
     currency: "USD",
   });
+};
+
+export const getServiceFromServicesList = (service: string) => {
+  const services = SERVICES_LIST;
+  const found = services.find((s) => s.service === service);
+  return found ?? null;
 };
