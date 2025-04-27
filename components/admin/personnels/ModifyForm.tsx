@@ -115,7 +115,7 @@ const ModifyForm = ({ personnel }: ModifyFormProps) => {
 
       if (response.data) {
         toast.success(response.message);
-        router.push(`/personnels/${personnel.id}`);
+        router.push(`/gestion-personnels/${personnel.id}`);
       }
     } catch (error) {
       console.log(error);
@@ -139,7 +139,7 @@ const ModifyForm = ({ personnel }: ModifyFormProps) => {
         return;
       }
       toast.success(response.message);
-      router.push(`/personnels/${id}`);
+      router.push(`/gestion-personnels/${id}`);
     } catch (error) {
       console.log(error);
       toast.error("Une erreur est survenue lors de la bannissement");

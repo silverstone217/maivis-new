@@ -132,4 +132,19 @@ const DAY_LIST = [
   { label: "Dimanche", value: "sunday" },
 ];
 
-export { JOBS_LIST, SERVICES_LIST, DURATION_LIST, ROLES_LIST, DAY_LIST };
+const STATUS_LIST = [
+  { label: "En attente", value: "pending" },
+  { label: "En cours", value: "in_progress" },
+  { label: "Terminé", value: "completed" },
+  { label: "Reporté", value: "rescheduled" },
+  { label: "Annulé", value: "cancelled" },
+];
+
+export {
+  JOBS_LIST,
+  SERVICES_LIST,
+  DURATION_LIST,
+  ROLES_LIST,
+  DAY_LIST,
+  STATUS_LIST,
+};

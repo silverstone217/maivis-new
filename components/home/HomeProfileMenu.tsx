@@ -20,9 +20,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HOME_LINKS } from "@/utils/data";
-
+import { useRouter } from "next/navigation";
 function HomeProfileMenu() {
   const { user } = useGetUser();
+  const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -49,7 +50,10 @@ function HomeProfileMenu() {
             <span>Personnels</span>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => router.push("/mes-reservations")}
+          className="cursor-pointer"
+        >
           <CreditCard className="size-4 mr-2" />
           <span>Mes reservations</span>
         </DropdownMenuItem>

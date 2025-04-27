@@ -1,4 +1,5 @@
 "use client";
+"use client";
 import React, { useState } from "react";
 import {
   ColumnDef,
@@ -41,16 +42,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { PersonnelsTypes } from "@/types/personnelTypes";
 import Link from "next/link";
-import { getRoleDescription, returnDataValue } from "@/utils/functions";
-import { JOBS_LIST } from "@/utils/otherData";
-import noImage from "@/public/images/no-user.png";
-
-type DisplayTableDataProps = {
-  data: PersonnelsTypes[];
-};
+import { formatPrice, returnDataValue } from "@/utils/functions";
+import { JOBS_LIST, STATUS_LIST } from "@/utils/otherData";
+import { bookingsWithPersonnelAdminType } from "@/types/bookings";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,7 +53,11 @@ interface DataTableProps<TData, TValue> {
 }
 
 // delete component
-const ActionsCell = ({ personnel }: { personnel: PersonnelsTypes }) => {
+const ActionsCell = ({
+  booking,
+}: {
+  booking: bookingsWithPersonnelAdminType;
+}) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -73,13 +72,13 @@ const ActionsCell = ({ personnel }: { personnel: PersonnelsTypes }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(personnel.id)}
+          onClick={() => navigator.clipboard.writeText(booking.id)}
         >
-          Copier l&apos;ID personnel
+          Copier l&apos;ID réservation
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={`/gestion-personnels/${personnel.id}`}>
+          <Link href={`/gestion-reservations/${booking.id}`}>
             <span className="text-sm">Consulter</span>
           </Link>
           {/* <ModifyRoleUser admin={admins} /> */}
@@ -88,63 +87,56 @@ const ActionsCell = ({ personnel }: { personnel: PersonnelsTypes }) => {
           disabled
           className="text-red-500 hover:text-red-600 hover:cursor-pointer"
         >
-          Bannir
+          Annuler
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
+export const BookingsColumns: ColumnDef<bookingsWithPersonnelAdminType>[] = [
   {
-    accessorKey: "image",
-    header: "Image",
+    accessorKey: "index",
+    header: "#",
     cell: ({ row }) => (
-      <div className="lowercase">
-        <Image
-          src={row.getValue("image") ?? noImage}
-          alt="image du produit"
-          width={800}
-          height={800}
-          priority
-          className="object-cover brightness-90 w-12 h-12 rounded-full"
-        />
+      <div className="text-sm font-medium">
+        {(row.index + 1).toString().padStart(2, "0")}
       </div>
     ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "clientName",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Nom
+          Nom du client
           <ArrowUpDown className="ml-2 h-4 w-4 capitalize" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="capitalize text-sm">{row.getValue("name")}</div>
+      <div className="capitalize text-sm">{row.getValue("clientName")}</div>
     ),
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "clientNumber",
+    header: "Téléphone",
     cell: ({ row }) => (
-      <div className="capitalize text-sm">{row.getValue("email")}</div>
+      <div className="capitalize text-sm">{row.getValue("clientNumber")}</div>
     ),
   },
   {
-    accessorKey: "job",
+    accessorKey: "service",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Fonction
+          Service
           <ArrowUpDown className="ml-2 h-4 w-4 " />
         </Button>
       );
@@ -157,15 +149,42 @@ export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
           line-clamp-1 text-left
           `}
         >
-          {returnDataValue(row.getValue("job")!, JOBS_LIST)}
+          {returnDataValue(row.getValue("service")!, JOBS_LIST)}
         </span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div className="capitalize text-sm">
+        {returnDataValue(row.getValue("status")!, STATUS_LIST)}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "price",
+    header: "Prix",
+    cell: ({ row }) => {
+      const price = row.getValue("price");
+
+      return <div className="text-sm">{formatPrice(price as number)}</div>;
+    },
+  },
+  {
+    accessorKey: "isPaid",
+    header: "A payé",
+    cell: ({ row }) => (
+      <div className="capitalize text-sm">
+        {row.getValue("isPaid") ? "Oui" : "Non"}
       </div>
     ),
   },
 
   {
     accessorKey: "createdAt",
-    header: "A rejoint le",
+    header: "A reservé le",
     cell: ({ row }) => {
       const createdAt = new Date(row.getValue("createdAt"));
 
@@ -183,13 +202,13 @@ export const UsersColumns: ColumnDef<PersonnelsTypes>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const personnel = row.original;
-      return <ActionsCell personnel={personnel} />;
+      const booking = row.original;
+      return <ActionsCell booking={booking} />;
     },
   },
 ];
 
-export function PersonnelsDataTable<TData, TValue>({
+export function BookingsDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -226,76 +245,129 @@ export function PersonnelsDataTable<TData, TValue>({
     },
   });
 
-  const personnels = data as PersonnelsTypes[];
+  const bookings = data as bookingsWithPersonnelAdminType[];
 
-  const uniqueJob = Array.from(new Set(personnels.map((dt) => dt.job)));
-
+  const uniqueService = Array.from(new Set(bookings.map((dt) => dt.service)));
+  const uniqueStatus = Array.from(new Set(bookings.map((dt) => dt.status)));
+  const uniqueIsPaid = Array.from(new Set(bookings.map((dt) => dt.isPaid)));
   return (
     <div className="rounded-md border p-2 w-full">
       {/* filter top */}
-      <div className="flex flex-col md:flex-row gap-4 py-4 w-full">
+      <div className="flex flex-col md:flex-row gap-4 py-4 w-full md:flex-wrap">
         <Input
-          placeholder="Filtrer par nom..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+          placeholder="Filtrer par nom du client..."
+          value={
+            (table.getColumn("clientName")?.getFilterValue() as string) ?? ""
           }
-          className="w-full sm:max-w-sm"
+          onChange={(event) =>
+            table.getColumn("clientName")?.setFilterValue(event.target.value)
+          }
+          className="w-full sm:max-w-[300px] xl:max-w-[200px]"
         />
 
-        <div className="md:flex items-center gap-4 md:flex-1 grid grid-cols-2">
-          {/* select job */}
-          <Select
-            onValueChange={(value) => {
-              // if value is "all", then clear the filter
-              if (value === "all") {
-                table.getColumn("job")?.setFilterValue(undefined);
-              } else {
-                table.getColumn("job")?.setFilterValue(value);
-              }
-            }}
-          >
-            <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder="Filtrer par fonction..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toutes les fonctions</SelectItem>
-              {uniqueJob.map((job) => (
-                <SelectItem key={job} value={job!}>
-                  {returnDataValue(job!, JOBS_LIST)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        {/* select job */}
+        <Select
+          onValueChange={(value) => {
+            // if value is "all", then clear the filter
+            if (value === "all") {
+              table.getColumn("service")?.setFilterValue(undefined);
+            } else {
+              table.getColumn("service")?.setFilterValue(value);
+            }
+          }}
+        >
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Filtrer par service..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="capitalize">
+              Tous les services
+            </SelectItem>
+            {uniqueService.map((service) => (
+              <SelectItem key={service} value={service!} className="capitalize">
+                {returnDataValue(service!, JOBS_LIST)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-          {/* colonnes */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="md:ml-auto">
-                Colonnes <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        {/* select status */}
+        <Select
+          onValueChange={(value) => {
+            if (value === "all") {
+              table.getColumn("status")?.setFilterValue(undefined);
+            } else {
+              table.getColumn("status")?.setFilterValue(value);
+            }
+          }}
+        >
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Filtrer par status..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="capitalize">
+              Tous les status
+            </SelectItem>
+            {uniqueStatus.map((status) => (
+              <SelectItem key={status} value={status!} className="capitalize">
+                {returnDataValue(status!, STATUS_LIST)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* select is paid */}
+        <Select
+          onValueChange={(value) => {
+            table.getColumn("isPaid")?.setFilterValue(value);
+          }}
+        >
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Filtrer par paiement..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all" className="capitalize">
+              Tous les paiements
+            </SelectItem>
+            {uniqueIsPaid.map((isPaid) => (
+              <SelectItem
+                key={isPaid.toString()}
+                value={isPaid.toString()}
+                className="capitalize"
+              >
+                {isPaid ? "Oui" : "Non"}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* colonnes */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="md:ml-auto">
+              Colonnes <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* table colonne */}

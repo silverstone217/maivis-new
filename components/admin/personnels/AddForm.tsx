@@ -85,7 +85,7 @@ function AddForm() {
 
       toast.success(response.message);
 
-      setTimeout(() => router.push("/personnels"), 2000);
+      setTimeout(() => router.push("/gestion-personnels"), 2000);
     } catch (error) {
       console.log(error);
       toast.error("Une erreur est survenue lors de l'enregistrement");

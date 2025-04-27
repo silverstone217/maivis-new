@@ -72,7 +72,7 @@ const HOME_LINKS = [
     title: "Mes reservations",
     href: "/mes-reservations",
     isProtected: true,
-    role: ["USER"],
+    role: ["USER", "ADMIN", "SUPER_ADMIN"],
   },
   {
     id: 7,
@@ -99,13 +99,13 @@ const ADMIN_LINKS = [
   {
     id: 2,
     title: "Personnels",
-    href: "/personnels",
+    href: "/gestion-personnels",
     icon: UsersRound,
   },
   {
     id: 3,
     title: "Reservations",
-    href: "/reservations",
+    href: "/gestion-reservations",
     icon: CalendarCheck,
   },
   {
