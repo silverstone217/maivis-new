@@ -11,18 +11,18 @@ const AuthPage = async () => {
   }
 
   return (
-    <div>
-      <div
-        className="grid grid-cols-1 md:grid-cols-2 md:h-screen max-w-7xl mx-auto p-4 
-      transition-all duration-500 ease-in-out
-      "
-      >
-        {/* left section */}
-        <LeftSection />
-        {/* right section form */}
+    <main
+      className="min-h-screen flex flex-col md:flex-row max-w-7xl mx-auto 
+    bg-white dark:bg-gray-900 shadow-lg rounded-lg overflow-hidden"
+    >
+      {/* Left section: image / illustration / branding */}
+      <LeftSection />
+
+      {/* Right section: auth form */}
+      <section className="flex-1 flex items-center justify-center p-8 md:p-12">
         <AuthForm />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

@@ -1,8 +1,10 @@
 "use client";
+
 import { AUTH_CONTENT } from "@/utils/data";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import logo from "@/public/images/logo.png";
+
 export default function LeftSection() {
   const [index, setIndex] = useState(0);
 
@@ -10,69 +12,61 @@ export default function LeftSection() {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % AUTH_CONTENT.length);
     }, 6000);
-
     return () => clearInterval(interval);
   }, []);
 
   const currentContent = useMemo(() => AUTH_CONTENT[index], [index]);
 
   return (
-    <section className="md:flex hidden h-full w-full">
-      <div
-        className="flex flex-col items-center justify-center gap-4 relative h-full 
-      w-full transition-all duration-500 ease-in-out"
-      >
-        {/* absolute image */}
-        <Image
-          src={currentContent.image}
-          alt={currentContent.title}
-          className="w-full h-full object-cover
-            absolute inset-0 brightness-75 rounded-2xl
-            transition-all duration-500 ease-in-out
-        "
-          width={1200}
-          height={1800}
-          priority
-        />
-        {/* content */}
-        <div
-          className="flex flex-col items-center justify-between gap-4 z-10 h-full p-6 xl:p-8
-        transition-all duration-500 ease-in-out
-        "
-        >
-          {/* Logo */}
-          <div className="flex items-center justify-start w-full">
-            <Image
-              src={logo}
-              alt="logo"
-              width={100}
-              height={100}
-              className="object-cover size-16"
+    <section className="hidden md:flex flex-col justify-between w-full max-w-lg relative overflow-hidden shadow-lg">
+      {/* Background image with overlay */}
+      <Image
+        src={currentContent.image}
+        alt={currentContent.title}
+        fill
+        priority
+        className="object-cover brightness-75 transition-opacity duration-700 ease-in-out"
+      />
+
+      {/* Overlay content */}
+      <div className="relative z-10 flex flex-col justify-between h-full p-8 text-white">
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-8">
+          <Image
+            src={logo}
+            alt="logo"
+            width={48}
+            height={48}
+            className="rounded-full"
+          />
+          <h1 className="text-2xl font-semibold tracking-wide select-none">
+            Maivis
+          </h1>
+        </div>
+
+        {/* Text content */}
+        <div className="space-y-4 max-w-xs">
+          <h2 className="text-3xl font-extrabold leading-tight">
+            {currentContent.title}
+          </h2>
+          <p className="text-sm opacity-90">{currentContent.description}</p>
+        </div>
+
+        {/* Pagination dots */}
+        <div className="flex gap-3 mt-6 justify-start">
+          {AUTH_CONTENT.map((_, idx) => (
+            <button
+              key={idx}
+              aria-label={`Afficher la slide ${idx + 1}`}
+              className={`h-2 rounded-full transition-colors duration-300 ease-in-out ${
+                index === idx
+                  ? "w-8 bg-primary"
+                  : "w-4 bg-white/50 hover:bg-white"
+              }`}
+              onClick={() => setIndex(idx)}
+              type="button"
             />
-            <h1 className="text-2xl font-bold text-white">Maivis</h1>
-          </div>
-
-          <div className="flex flex-col gap-2 transition-all duration-500 ease-in-out">
-            <h1 className="text-4xl font-bold text-white text-pretty">
-              {currentContent.title}
-            </h1>
-            <p className="text-white text-sm xl:text-base">
-              {currentContent.description}
-            </p>
-
-            {/* buttons tab */}
-            <div className="flex items-center justify-center gap-2 mt-3 transition-all duration-500 ease-in-out">
-              {AUTH_CONTENT.map((_, idx) => (
-                <button
-                  key={idx}
-                  className={`w-12 h-2 rounded-2xl cursor-pointer 
-                    
-                    ${index === idx ? "bg-primary" : "bg-white"}`}
-                  onClick={() => setIndex(idx)}
-                ></button>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

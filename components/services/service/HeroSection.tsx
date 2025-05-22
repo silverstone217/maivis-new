@@ -1,6 +1,7 @@
 "use client";
 import { createBooking, NewBookingType } from "@/actions/booking-action";
 import SheetComponent from "@/components/SheetComponent";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import useGetUser from "@/hooks/useGetUser";
 import { ServiceType } from "@/types/service";
 import { formatPrice, isEmptyString, returnDataValue } from "@/utils/functions";
-import { DAY_LIST, DURATION_LIST, JOBS_LIST } from "@/utils/otherData";
+import { DAY_LIST, DURATION_LIST } from "@/utils/otherData";
+import { CalendarDays, MapPin, Users } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -19,55 +21,60 @@ type HeroSectionProps = {
   personnelsLength: number;
 };
 
-export const HeroSection = ({
-  service,
-  personnelsLength,
-}: HeroSectionProps) => {
+export function HeroSection({ service, personnelsLength }: HeroSectionProps) {
   return (
-    <div className="container mx-auto p-4 pt-20 min-h-[65dvh]">
-      <div
-        className="flex flex-col 
-        items-center justify-center gap-4 lg:items-start lg:gap-8
-        transition-all duration-500 ease-in-out
-        "
-      >
+    <section
+      className="relative bg-white dark:bg-gray-900 py-16 px-6 md:px-12 flex 
+    flex-col md:flex-row items-center max-w-7xl mx-auto rounded-lg shadow 
+    "
+    >
+      {/* Image */}
+      <div className="relative w-full md:w-1/2 h-64 md:h-96 rounded-lg overflow-hidden shadow-md mb-8 md:mb-0">
         <Image
           src={service.image}
           alt={service.name}
-          width={1800}
-          height={1400}
-          className="w-full h-[42dvh] lg:h-[45dvh] object-cover brightness-75 rounded-lg 
-          transition-all duration-500 ease-in-out"
+          fill
+          className="object-cover"
+          priority
         />
-        <div className="flex flex-col gap-2 w-full transition-all duration-500 ease-in-out">
-          <h1 className="text-4xl font-bold max-w-lg text-pretty">
-            {service.name}
-          </h1>
-          <p className="text-sm text-gray-500 max-w-lg text-balance">
-            {service.description}
-          </p>
-
-          <div className="flex items-center gap-2 capitalize">
-            <span className="text-sm text-gray-500 font-bold">
-              {returnDataValue(service.service, JOBS_LIST)}
-            </span>
-
-            <span className="text-sm text-gray-500">
-              travail/{returnDataValue(service.duration, DURATION_LIST)}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 mt-4">
-            <SubscribeToService
-              service={service}
-              personnelsLength={personnelsLength}
-            />
-          </div>
-        </div>
       </div>
-    </div>
+
+      {/* Content */}
+      <div className="md:ml-12 flex flex-col flex-1 max-w-xl">
+        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">
+          {service.name}
+        </h1>
+
+        <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+          {service.description}
+        </p>
+
+        <div className="flex flex-wrap gap-4 mb-6">
+          <Badge variant="outline" className="flex items-center gap-2">
+            <Users size={18} />
+            {personnelsLength}{" "}
+            {personnelsLength > 1 ? "personnels" : "personnel"}
+          </Badge>
+          <Badge variant="outline" className="flex items-center gap-2">
+            <CalendarDays size={18} />
+            {service.duration}
+          </Badge>
+          {service.stayHome && (
+            <Badge variant="outline" className="flex items-center gap-2">
+              <MapPin size={18} />
+              {service.stayHome && "Peut dormir chez vous"}
+            </Badge>
+          )}
+        </div>
+
+        <SubscribeToService
+          personnelsLength={personnelsLength}
+          service={service}
+        />
+      </div>
+    </section>
   );
-};
+}
 
 const canGetDayOff = ["monthly", "weekly", "daily"];
 
@@ -431,10 +438,13 @@ const SubscribeToService = ({
             </Button>
 
             {/* Personnels length */}
-            <p className="text-xs text-gray-500">
-              <span className="font-bold">{personnelsLength}</span> personnel(s)
-              disponible(s)
-            </p>
+            <div className="flex justify-between items-center">
+              <Badge variant="outline" className="flex items-center gap-2">
+                <Users size={18} />
+                {personnelsLength}{" "}
+                {personnelsLength > 1 ? "personnels" : "personnel"}
+              </Badge>
+            </div>
           </form>
         </div>
       }

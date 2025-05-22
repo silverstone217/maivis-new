@@ -38,6 +38,7 @@ export type ServiceType = {
   price: number;
   duration: Duration["value"];
   image: string | StaticImageData;
+  stayHome: boolean;
 };
 
 export type ServiceData = {

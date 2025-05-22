@@ -48,7 +48,7 @@ function HeroSection() {
 
           {/* Btns */}
           <div className="w-full flex items-center justify-center flex-wrap gap-4 md:gap-8 xl:px-8 md:grid md:grid-cols-2">
-            <Link href={"#"} className="w-full sm:w-[90%] md:w-full">
+            <Link href={"/services"} className="w-full sm:w-[90%] md:w-full">
               <Button className="items-center justify-center flex gap-4 px-6 md:px-8 py-5 md:py-6 w-full">
                 <HandPlatter className="size-5 md:size-6 shrink-0 text-white dark:text-white" />
                 <span className="font-medium text-white dark:text-white">

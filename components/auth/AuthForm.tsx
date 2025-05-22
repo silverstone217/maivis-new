@@ -1,4 +1,5 @@
 "use client";
+
 import { useMemo, useState } from "react";
 import { Input } from "../ui/input";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
@@ -9,6 +10,7 @@ import { toast } from "sonner";
 import { registerAction, RegisterAuthType } from "@/actions/auth-actions";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Label } from "../ui/label";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -22,8 +24,6 @@ export default function AuthForm() {
 
   const { update } = useSession();
 
-  //   const [error, setError] = useState("");
-
   const isBtnDisabled = useMemo(() => {
     if (isLoading) return true;
     if (isLogin && (isEmptyString(password) || isEmptyString(email)))
@@ -33,21 +33,19 @@ export default function AuthForm() {
       (isEmptyString(password) || isEmptyString(email) || isEmptyString(name))
     )
       return true;
-
     return false;
   }, [email, password, isLoading, name, isLogin]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    // setError("");
 
     try {
       const formData: RegisterAuthType = {
         name: name.trim().toLocaleLowerCase(),
         email: email.trim().toLocaleLowerCase(),
         password: password.trim(),
-        isLogin: isLogin,
+        isLogin,
       };
 
       const res = await registerAction(formData);
@@ -69,7 +67,7 @@ export default function AuthForm() {
         await update();
       }, 2000);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Une erreur est survenue lors de la connexion", {
         description: "Veuillez réessayer plus tard",
         duration: 2500,
@@ -80,148 +78,156 @@ export default function AuthForm() {
   };
 
   return (
-    <section className="w-full md:h-full">
-      {/* container */}
-      <div
-        className="flex flex-col md:h-full w-full items-center justify-center gap-8 p-4 md:p-6 xl:p-8
-      transition-all duration-500 ease-in-out
-      "
-      >
-        {/* Top texts */}
-        <div className="md:w-[90%] 2xl:w-[80%] w-full mx-auto flex flex-col gap-2 transition-all duration-500 ease-in-out">
-          <h2 className="font-bold text-4xl text-pretty">
-            {isLogin ? "Connexion au compte" : "Créer un compte"}
-          </h2>
-          <p className="text-sm xl:text-base">
-            {isLogin
-              ? "Connectez-vous à votre compte pour accéder à votre espace"
-              : "Créez un compte pour accéder à votre espace"}
-          </p>
-        </div>
+    <div className="w-full max-w-md mx-auto">
+      <header className="mb-8 text-center">
+        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+          {isLogin ? "Connexion au compte" : "Créer un compte"}
+        </h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          {isLogin
+            ? "Connectez-vous pour accéder à votre espace."
+            : "Créez un compte pour commencer."}
+        </p>
+      </header>
 
-        {/* Form */}
-        <form
-          className="flex flex-col gap-4 md:w-[90%] 2xl:w-[80%] w-full mx-auto
-        transition-all duration-500 ease-in-out
-        "
-          onSubmit={handleSubmit}
-        >
-          {/* Name */}
-          {!isLogin && (
-            <div className="w-full relative">
-              <User className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Nom (uniquement inscription) */}
+        {!isLogin && (
+          <div className="space-y-1">
+            <Label htmlFor="name">Nom</Label>
+            <div className="relative">
+              <User
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <Input
+                id="name"
+                name="name"
                 type="text"
-                placeholder="Nom"
+                placeholder="Votre nom"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full pl-10 text-sm xl:text-base font-medium"
-                required
-                autoComplete="name"
-                name="name"
-                id="name"
                 disabled={isLoading}
                 minLength={3}
                 maxLength={60}
+                className="pl-10"
+                required
+                autoComplete="name"
               />
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Email */}
-          <div className="w-full relative">
-            <Mail className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        {/* Email */}
+        <div className="space-y-1">
+          <Label htmlFor="email">Email</Label>
+          <div className="relative">
+            <Mail
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={20}
+            />
             <Input
+              id="email"
+              name="email"
               type="email"
-              placeholder="Email"
+              placeholder="exemple@mail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 text-sm xl:text-base font-medium"
-              required
-              autoComplete="email"
-              name="email"
-              id="email"
               disabled={isLoading}
               minLength={3}
               maxLength={60}
+              className="pl-10"
+              required
+              autoComplete="email"
             />
           </div>
+        </div>
 
-          {/* Password */}
-          <div className="w-full relative">
-            <Lock className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        {/* Mot de passe */}
+        <div className="space-y-1">
+          <Label htmlFor="password">Mot de passe</Label>
+          <div className="relative">
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={20}
+            />
             <Input
+              id="password"
+              name="password"
               type={isVisible ? "text" : "password"}
-              placeholder="Mot de passe"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-10 text-sm xl:text-base font-medium"
-              required
-              autoComplete="current-password"
-              name="password"
-              id="password"
               disabled={isLoading}
               minLength={6}
               maxLength={12}
+              className="pr-10 pl-10"
+              required
+              autoComplete={isLogin ? "current-password" : "new-password"}
             />
             <Button
+              type="button"
               variant="ghost"
               size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-transparent hover:text-primary
-              transition-all duration-300 ease-in-out cursor-pointer hover:dark:bg-transparent
-              "
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary"
               onClick={() => setIsVisible(!isVisible)}
               disabled={isLoading}
-              type="button"
+              aria-label={
+                isVisible
+                  ? "Masquer le mot de passe"
+                  : "Afficher le mot de passe"
+              }
             >
-              {isVisible ? <Eye /> : <EyeOff />}
+              {isVisible ? <Eye size={20} /> : <EyeOff size={20} />}
             </Button>
           </div>
+        </div>
 
-          {/* forget password */}
-          <Link href="/forget-password" className="w-fit self-end">
-            <p className="text-sm opacity-70 text-gray-600">
+        {/* Mot de passe oublié */}
+        {isLogin && (
+          <div className="text-right">
+            <Link
+              href="/forget-password"
+              className="text-sm text-primary hover:underline"
+            >
               Mot de passe oublié ?
-            </p>
-          </Link>
+            </Link>
+          </div>
+        )}
 
-          {/* Error */}
-          {/* {error && <p className="text-destructive text-sm">{error}</p>} */}
+        {/* Bouton soumettre */}
+        <Button
+          type="submit"
+          disabled={isBtnDisabled}
+          className="w-full py-3 text-lg font-semibold"
+        >
+          {isLoading
+            ? "Chargement..."
+            : isLogin
+            ? "Connexion"
+            : "Créer un compte"}
+        </Button>
 
-          {/* Button submit*/}
+        {/* Switch connexion / inscription */}
+        <div className="text-center mt-4">
           <Button
-            type="submit"
-            disabled={isBtnDisabled}
-            className="cursor-pointer"
-          >
-            {isLoading
-              ? "Chargement..."
-              : isLogin
-              ? "Connexion"
-              : "Créer un compte"}
-          </Button>
-
-          {/* Link switch  auth*/}
-          <Button
-            variant={"ghost"}
-            className="w-fit self-end hover:bg-transparent cursor-pointer
-             hover:dark:bg-transparent"
+            variant="link"
             type="button"
             onClick={() => setIsLogin(!isLogin)}
             disabled={isLoading}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary"
           >
-            <p className="text-sm opacity-70 text-gray-600">
-              {isLogin
-                ? " Pas de compte ? Créer un compte"
-                : "Deja un compte ? Connexion"}
-            </p>
+            {isLogin
+              ? "Pas de compte ? Créez-en un"
+              : "Déjà un compte ? Connectez-vous"}
           </Button>
-        </form>
+        </div>
+      </form>
 
-        {/* All rights reserved */}
-        <p className="text-sm opacity-70 text-gray-600 fixed bottom-6">
-          MAIVIS &copy; {new Date().getFullYear()} Tous droits réservés.
-        </p>
-      </div>
-    </section>
+      {/* Footer */}
+      <footer className="mt-12 text-center text-xs text-gray-400 select-none">
+        MAIVIS &copy; {new Date().getFullYear()} Tous droits réservés.
+      </footer>
+    </div>
   );
 }

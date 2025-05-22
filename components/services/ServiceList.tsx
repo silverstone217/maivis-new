@@ -4,51 +4,72 @@ import { formatPrice, returnDataValue } from "@/utils/functions";
 import { DURATION_LIST, JOBS_LIST, SERVICES_LIST } from "@/utils/otherData";
 import Image from "next/image";
 import Link from "next/link";
+import { Clock, DollarSign } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Badge } from "../ui/badge";
 
 export const ServiceList = () => {
   return (
-    <div
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4
-    transition-all duration-500 ease-in-out
-    "
-    >
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {SERVICES_LIST.map((service) => (
-        <Link href={`/services/${service.service}`} key={service.service}>
-          <div
-            className="grid grid-cols-3 border shadow-lg w-full flex-row transition-all 
-          duration-500 ease-in-out group rounded-lg"
+        <Link
+          href={`/services/${service.service}`}
+          key={service.service}
+          className="group"
+          aria-label={`Voir le service ${returnDataValue(
+            service.service,
+            JOBS_LIST
+          )}`}
+        >
+          <Card
+            className="flex flex-col pt-0 h-full shadow-lg transition-transform duration-300 
+          ease-in-out hover:scale-[1.03] gap-3 lg:gap-6"
           >
-            {/* image */}
-            <div className="overflow-hidden h-40 flex-shrink-0 col-span-1 rounded-l-lg">
+            <CardHeader className="p-0 overflow-hidden rounded-t-lg relative h-52">
               <Image
                 src={service.image}
                 alt={service.service}
-                width={600}
-                height={600}
-                className="object-cover h-full w-full transition-all duration-500 ease-in-out
-                group-hover:scale-125 rounded-l-lg
-                "
+                fill
+                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
                 priority
               />
-            </div>
-            {/* title */}
-            <div className="flex flex-col gap-2 py-2 px-4 col-span-2">
-              <h3 className="text-lg font-bold capitalize">
+            </CardHeader>
+
+            <CardContent className="flex flex-col flex-1 p-4">
+              <CardTitle className="text-lg font-semibold capitalize mb-2 text-gray-900 dark:text-gray-100">
                 {returnDataValue(service.service, JOBS_LIST)}
-              </h3>
-              <p className="text-sm text-gray-500 line-clamp-3 h-16 overflow-hidden">
+              </CardTitle>
+              <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 flex-grow">
                 {service.description}
               </p>
-              <div className="flex items-center gap-2 justify-between">
-                <span className="text-xs text-gray-500 capitalize">
-                  Travail/{returnDataValue(service.duration, DURATION_LIST)}
+            </CardContent>
+
+            <CardFooter className="flex items-center justify-between px-4 py-2 border-t border-gray-200 dark:border-gray-700">
+              <Badge
+                variant="outline"
+                className="flex items-center gap-1 text-gray-700 dark:text-gray-300"
+              >
+                <Clock size={16} />
+                <span className="capitalize text-xs">
+                  {returnDataValue(service.duration, DURATION_LIST)}
                 </span>
-                <span className="text-sm text-gray-500 font-bold">
-                  {formatPrice(service.price)}
-                </span>
-              </div>
-            </div>
-          </div>
+              </Badge>
+
+              <Badge
+                variant="secondary"
+                className="flex items-center gap-1 font-semibold"
+              >
+                <DollarSign size={16} />
+                <span>{formatPrice(service.price)}</span>
+              </Badge>
+            </CardFooter>
+          </Card>
         </Link>
       ))}
     </div>

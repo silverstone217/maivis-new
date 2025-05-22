@@ -37,6 +37,7 @@ const SERVICES_LIST = [
     price: 50,
     duration: "monthly",
     image: maid,
+    stayHome: true,
   },
   {
     name: "Repas à domicile",
@@ -46,6 +47,7 @@ const SERVICES_LIST = [
     price: 30,
     duration: "monthly",
     image: cooker,
+    stayHome: true,
   },
   {
     name: "Transport privé",
@@ -55,6 +57,7 @@ const SERVICES_LIST = [
     price: 40,
     duration: "monthly",
     image: driver,
+    stayHome: true,
   },
   {
     name: "Surveillance résidentielle",
@@ -64,6 +67,7 @@ const SERVICES_LIST = [
     price: 2000,
     duration: "monthly",
     image: guard,
+    stayHome: true,
   },
   {
     name: "Dépannage plomberie",
@@ -73,6 +77,7 @@ const SERVICES_LIST = [
     price: 80,
     duration: "once",
     image: plumber,
+    stayHome: false,
   },
   {
     name: "Installation électrique",
@@ -82,6 +87,7 @@ const SERVICES_LIST = [
     price: 100,
     duration: "once",
     image: electrician,
+    stayHome: false,
   },
   {
     name: "Construction mur",
@@ -91,6 +97,7 @@ const SERVICES_LIST = [
     price: 150,
     duration: "hourly",
     image: mason,
+    stayHome: false,
   },
   {
     name: "Peinture intérieure",
@@ -100,6 +107,7 @@ const SERVICES_LIST = [
     price: 120,
     duration: "hourly",
     image: painter,
+    stayHome: false,
   },
   {
     name: "Fabrication meuble sur mesure",
@@ -109,6 +117,7 @@ const SERVICES_LIST = [
     price: 300,
     duration: "once",
     image: carpenter,
+    stayHome: false,
   },
 ];
 
