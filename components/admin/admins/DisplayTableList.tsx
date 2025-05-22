@@ -195,14 +195,11 @@ export function AdminsDataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 12,
   });
@@ -228,86 +225,75 @@ export function AdminsDataTable<TData, TValue>({
     },
   });
 
-  const personnels = data as PersonnelsTypes[];
-
-  const uniqueRole = Array.from(new Set(personnels.map((dt) => dt.role)));
+  // Pour le filtre rôle
+  const uniqueRole = Array.from(new Set((data as User[]).map((dt) => dt.role)));
 
   return (
-    <div className="rounded-md border p-2 w-full">
-      {/* filter top */}
-      <div className="flex flex-col md:flex-row gap-4 py-4 w-full">
+    <div className="w-full rounded-2xl shadow-lg border bg-white dark:bg-gray-900 p-0 md:p-4 overflow-x-auto">
+      {/* Filtres */}
+      <div className="flex flex-col md:flex-row md:flex-wrap gap-3 p-4 border-b border-gray-100 dark:border-gray-800 overflow-x-auto">
         <Input
           placeholder="Filtrer par nom..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="w-full sm:max-w-sm"
+          className="w-full md:w-60"
         />
-
-        <div className="md:flex items-center gap-4 md:flex-1 grid grid-cols-2">
-          {/* select job */}
-          <Select
-            onValueChange={(value) => {
-              // if value is "all", then clear the filter
-              if (value === "all") {
-                table.getColumn("role")?.setFilterValue(undefined);
-              } else {
-                table.getColumn("role")?.setFilterValue(value);
-              }
-            }}
-          >
-            <SelectTrigger className="w-full md:w-[200px]">
-              <SelectValue placeholder="Filtrer par rôle..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Tous les rôles</SelectItem>
-              {uniqueRole.map((role) => (
-                <SelectItem key={role} value={role!}>
-                  {returnDataValue(role!, ROLES_LIST)}
-                </SelectItem>
+        <Select
+          onValueChange={(value) => {
+            table
+              .getColumn("role")
+              ?.setFilterValue(value === "all" ? undefined : value);
+          }}
+        >
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Filtrer par rôle..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tous les rôles</SelectItem>
+            {uniqueRole.map((role) => (
+              <SelectItem key={role} value={role!}>
+                {returnDataValue(role!, ROLES_LIST)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-full md:w-auto">
+              Colonnes <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
               ))}
-            </SelectContent>
-          </Select>
-
-          {/* colonnes */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="md:ml-auto">
-                Colonnes <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
-      {/* table colonne */}
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <Table className="min-w-[800px]">
+          <TableHeader className="sticky top-0 z-10 bg-white dark:bg-gray-900">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="bg-gray-50 dark:bg-gray-800"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -315,49 +301,56 @@ export function AdminsDataTable<TData, TValue>({
                           header.getContext()
                         )}
                   </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                Pas resultats.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-3 px-2">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Aucun résultat.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
-      {/* pagination */}
-      <div className="flex items-center justify-end space-x-2 py-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} sur{" "}
-            {table.getFilteredRowModel().rows.length} ligne(s) selectionnée(s).
-          </div> */}
-        <div className="space-x-2">
+      {/* Pagination */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-3 px-4 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-2xl">
+        <span className="text-xs text-muted-foreground">
+          Page {table.getState().pagination.pageIndex + 1} sur{" "}
+          {table.getPageCount()}
+        </span>
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Precedent
+            Précédent
           </Button>
           <Button
             variant="outline"

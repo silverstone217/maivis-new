@@ -27,7 +27,7 @@ async function PersonnelsPage() {
 
         {/* Btn */}
         <div className="w-full lg:w-fit">
-          <Link href={"/personnels/ajouter"}>
+          <Link href={"/gestion-personnels/ajouter"}>
             <Button className="gap-2 w-full lg:w-fit">
               <PlusIcon className="size-4" />
               <span>Ajouter un personnel</span>

@@ -1,7 +1,7 @@
 import { getAllBookingsForAdmin } from "@/actions/booking-action";
 import {
-  BookingsColumns,
   BookingsDataTable,
+  BookingsColumns,
 } from "@/components/admin/bookings/DisplayTableList";
 import { bookingsWithPersonnelAdminType } from "@/types/bookings";
 
@@ -28,7 +28,10 @@ async function GestionReservationsPage() {
       </div>
 
       {/* Table */}
-      <BookingsDataTable data={bookings} columns={BookingsColumns} />
+      <BookingsDataTable<bookingsWithPersonnelAdminType, unknown>
+        columns={BookingsColumns}
+        data={data as bookingsWithPersonnelAdminType[]}
+      />
     </div>
   );
 }

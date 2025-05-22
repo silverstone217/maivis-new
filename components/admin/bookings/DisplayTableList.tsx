@@ -1,5 +1,4 @@
 "use client";
-"use client";
 import React, { useState } from "react";
 import {
   ColumnDef,
@@ -13,7 +12,6 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -250,39 +248,36 @@ export function BookingsDataTable<TData, TValue>({
   const uniqueService = Array.from(new Set(bookings.map((dt) => dt.service)));
   const uniqueStatus = Array.from(new Set(bookings.map((dt) => dt.status)));
   const uniqueIsPaid = Array.from(new Set(bookings.map((dt) => dt.isPaid)));
+
   return (
-    <div className="rounded-md border p-2 w-full">
-      {/* filter top */}
-      <div className="flex flex-col md:flex-row gap-4 py-4 w-full md:flex-wrap">
+    <div className="w-full rounded-2xl shadow-lg border bg-white dark:bg-gray-900 p-0 md:p-4 overflow-x-auto">
+      {/* Filtres */}
+      <div
+        className="flex flex-col md:flex-row md:flex-wrap gap-3 p-4 border-b 
+      border-gray-100 dark:border-gray-800 overflow-x-auto"
+      >
         <Input
-          placeholder="Filtrer par nom du client..."
+          placeholder="Filtrer par client..."
           value={
             (table.getColumn("clientName")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
             table.getColumn("clientName")?.setFilterValue(event.target.value)
           }
-          className="w-full sm:max-w-[300px] xl:max-w-[200px]"
+          className="w-full md:w-60"
         />
-
-        {/* select job */}
         <Select
           onValueChange={(value) => {
-            // if value is "all", then clear the filter
-            if (value === "all") {
-              table.getColumn("service")?.setFilterValue(undefined);
-            } else {
-              table.getColumn("service")?.setFilterValue(value);
-            }
+            table
+              .getColumn("service")
+              ?.setFilterValue(value === "all" ? undefined : value);
           }}
         >
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Filtrer par service..." />
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Service..." />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="capitalize">
-              Tous les services
-            </SelectItem>
+            <SelectItem value="all">Tous les services</SelectItem>
             {uniqueService.map((service) => (
               <SelectItem key={service} value={service!} className="capitalize">
                 {returnDataValue(service!, JOBS_LIST)}
@@ -290,24 +285,18 @@ export function BookingsDataTable<TData, TValue>({
             ))}
           </SelectContent>
         </Select>
-
-        {/* select status */}
         <Select
           onValueChange={(value) => {
-            if (value === "all") {
-              table.getColumn("status")?.setFilterValue(undefined);
-            } else {
-              table.getColumn("status")?.setFilterValue(value);
-            }
+            table
+              .getColumn("status")
+              ?.setFilterValue(value === "all" ? undefined : value);
           }}
         >
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Filtrer par status..." />
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Statut..." />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="capitalize">
-              Tous les status
-            </SelectItem>
+            <SelectItem value="all">Tous les statuts</SelectItem>
             {uniqueStatus.map((status) => (
               <SelectItem key={status} value={status!} className="capitalize">
                 {returnDataValue(status!, STATUS_LIST)}
@@ -315,36 +304,28 @@ export function BookingsDataTable<TData, TValue>({
             ))}
           </SelectContent>
         </Select>
-
-        {/* select is paid */}
         <Select
           onValueChange={(value) => {
-            table.getColumn("isPaid")?.setFilterValue(value);
+            table
+              .getColumn("isPaid")
+              ?.setFilterValue(value === "all" ? undefined : value);
           }}
         >
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Filtrer par paiement..." />
+          <SelectTrigger className="w-full md:w-48">
+            <SelectValue placeholder="Paiement..." />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all" className="capitalize">
-              Tous les paiements
-            </SelectItem>
+            <SelectItem value="all">Tous les paiements</SelectItem>
             {uniqueIsPaid.map((isPaid) => (
-              <SelectItem
-                key={isPaid.toString()}
-                value={isPaid.toString()}
-                className="capitalize"
-              >
+              <SelectItem key={isPaid?.toString()} value={isPaid?.toString()}>
                 {isPaid ? "Oui" : "Non"}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-
-        {/* colonnes */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="md:ml-auto">
+            <Button variant="outline" className="w-full md:w-auto">
               Colonnes <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -352,32 +333,31 @@ export function BookingsDataTable<TData, TValue>({
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      {/* table colonne */}
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <Table className="min-w-[800px]">
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className="bg-gray-50 dark:bg-gray-800"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -385,49 +365,56 @@ export function BookingsDataTable<TData, TValue>({
                           header.getContext()
                         )}
                   </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                Pas resultats.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="py-3 px-2">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Aucun résultat.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
-      {/* pagination */}
-      <div className="flex items-center justify-end space-x-2 py-4">
-        {/* <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} sur{" "}
-            {table.getFilteredRowModel().rows.length} ligne(s) selectionnée(s).
-          </div> */}
-        <div className="space-x-2">
+      {/* Pagination */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-3 px-4 py-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 rounded-b-2xl">
+        <span className="text-xs text-muted-foreground">
+          Page {table.getState().pagination.pageIndex + 1} sur{" "}
+          {table.getPageCount()}
+        </span>
+        <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Precedent
+            Précédent
           </Button>
           <Button
             variant="outline"
