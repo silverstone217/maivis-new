@@ -40,7 +40,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
               Service non trouvé
             </h1>
             <p className="text-muted-foreground text-center">
-              Le service que vous recherchez n'existe pas ou a été supprimé.
+              {`Le service que vous recherchez n'existe pas ou a été supprimé.`}
             </p>
             <Link href="/services" className="w-full">
               <Button className="w-full mt-2" variant="outline">
