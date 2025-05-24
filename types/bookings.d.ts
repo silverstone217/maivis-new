@@ -43,3 +43,10 @@ export type AvailablePersonnelsType = {
   updatedAt: Date;
   personnelId: string;
 };
+
+export type StatusType =
+  | "pending"
+  | "in_progress"
+  | "completed"
+  | "rescheduled"
+  | "cancelled";
